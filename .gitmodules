@@ -1,0 +1,6 @@
+# After updating anything here, run:
+#   git submodule sync
+
+[submodule "googletest"]
+	path = googletest
+	url = https://github.com/google/googletest.git
