@@ -11,10 +11,34 @@ using namespace std;
 
 
 bool partition_tokens(vector<string> tokens, vector<command_t>& commands) {
-  // TODO: implement me
+  command_t currentCommand;
 
-  // This is optional, but hopefully it helps. Read the Piazza post. =)
+  //check for pipes and redirects
+  for(vector<string>::iterator it = tokens.begin(); i != tokens.end(); ++it)
+  {
+    if(&it == "|")
+    {
+      commands.push_back(currentCommand);
+    }
 
+    else if (&it == ">>")
+    {
+      commands.push_back(currentCommand);
+    }
+
+    else if (&it == ">")
+    {
+      commands.push_back(currentCommand);
+    }
+
+    else if (&it == "<")
+    {
+      commands.push_back(currentCommand);
+    }
+  }
+
+  //if none push the line as a command
+  commands.push_back(currentCommand);
   return true;
 }
 
