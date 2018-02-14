@@ -13,8 +13,6 @@ using namespace std;
 bool partition_tokens(vector<string> tokens, vector<command_t>& commands) {
   command_t currentCommand;
   bool firstPipe = true;
-  bool firstRightDirect = true;
-  bool firstLeftDirect = true;
 
   //check for pipes and redirects
   for(vector<string>::iterator it = tokens.begin(); it != tokens.end(); ++it)
@@ -77,7 +75,7 @@ bool partition_tokens(vector<string> tokens, vector<command_t>& commands) {
         currentCommand.input_type = READ_FROM_STDIN;
       }
 
-      currentCommand.output_type = WRITE_TO_FILE;
+      currentCommand.output_type = APPEND_TO_FILE;
       commands.push_back(currentCommand);
     }
 
@@ -98,6 +96,16 @@ bool partition_tokens(vector<string> tokens, vector<command_t>& commands) {
       currentCommand.argv = a;
 
       commands.push_back(currentCommand);
+      if(!firstPipe)
+      {
+        currentCommand.input_type = READ_FROM_PIPE;
+      }
+      else
+      {
+        currentCommand.input_type = READ_FROM_STDIN;
+      }
+
+      currentCommand.output_type = WRITE_TO_FILE;
     }
 
     else if (*it == "<")
@@ -114,6 +122,18 @@ bool partition_tokens(vector<string> tokens, vector<command_t>& commands) {
 
       tokens.erase(it);
       currentCommand.argv = a;
+      currentCommand.input_type = READ_FROM_FILE;
+      
+      if(!firstPipe)
+      {
+        currentCommand.output_type = WRITE_TO_PIPE;
+      }
+      else
+      {
+        currentCommand.output_type = WRITE_TO_STDOUT;
+      }
+
+
 
       commands.push_back(currentCommand);
     }
