@@ -15,7 +15,7 @@ bool partition_tokens(vector<string> tokens, vector<command_t>& commands) {
   bool firstPipe = true;
   bool firstRightDirect = true;
   bool firstLeftDirect = true;
-  
+
   //check for pipes and redirects
   for(vector<string>::iterator it = tokens.begin(); it != tokens.end(); ++it)
   {
@@ -68,6 +68,16 @@ bool partition_tokens(vector<string> tokens, vector<command_t>& commands) {
       tokens.erase(it);
       currentCommand.argv = a;
 
+      if(!firstPipe)
+      {
+        currentCommand.input_type = READ_FROM_PIPE;
+      }
+      else
+      {
+        currentCommand.input_type = READ_FROM_STDIN;
+      }
+
+      currentCommand.output_type = WRITE_TO_FILE;
       commands.push_back(currentCommand);
     }
 
