@@ -21,6 +21,7 @@ bool partition_tokens(vector<string> tokens, vector<command_t>& commands) {
     if(*it == "|")
     {
       currentCommand = {};
+
       //generate the command behind the pipeline
       vector<string> a;
       for(vector<string>::iterator jt = tokens.begin(); jt != it; ++jt)
@@ -52,6 +53,18 @@ bool partition_tokens(vector<string> tokens, vector<command_t>& commands) {
     else if (*it == ">>")
     {
       currentCommand = {};
+
+      //generate the command behind the pipeline
+      vector<string> a;
+      for(vector<string>::iterator jt = tokens.begin(); jt != it; ++jt)
+      {
+        a.push_back(*jt); //emplace the argv
+        tokens.erase(jt); //remove from the tokens
+      }
+
+      tokens.erase(it);
+      currentCommand.argv = a;
+
       commands.push_back(currentCommand);
     }
 
@@ -59,28 +72,46 @@ bool partition_tokens(vector<string> tokens, vector<command_t>& commands) {
     else if (*it == ">")
     {
       currentCommand = {};
+
+      //generate the command behind the pipeline
+      vector<string> a;
+      for(vector<string>::iterator jt = tokens.begin(); jt != it; ++jt)
+      {
+        a.push_back(*jt); //emplace the argv
+        tokens.erase(jt); //remove from the tokens
+      }
+
+      tokens.erase(it);
+      currentCommand.argv = a;
+
       commands.push_back(currentCommand);
     }
 
     else if (*it == "<")
     {
       currentCommand = {};
+
+      //generate the command behind the pipeline
+      vector<string> a;
+      for(vector<string>::iterator jt = tokens.begin(); jt != it; ++jt)
+      {
+        a.push_back(*jt); //emplace the argv
+        tokens.erase(jt); //remove from the tokens
+      }
+
+      tokens.erase(it);
+      currentCommand.argv = a;
+
       commands.push_back(currentCommand);
     }
   }
 
-  //if none push the line as a command
+  //if no pipes or directions, push the line as a command
   if(!tokens.empty())
   {
     currentCommand = {};
-    vector<string> a;
-    for(vector<string>::iterator it = tokens.begin(); it != tokens.end(); ++it)
-    {
-      a.push_back(*it); //emplace the argv
-      tokens.erase(it); //remove from the tokens
-    }
 
-    currentCommand.argv = a;
+    currentCommand.argv = tokens;
     currentCommand.input_type = READ_FROM_STDIN;
     currentCommand.output_type = WRITE_TO_STDOUT;
     commands.push_back(currentCommand);
