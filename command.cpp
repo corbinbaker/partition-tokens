@@ -12,33 +12,79 @@ using namespace std;
 
 bool partition_tokens(vector<string> tokens, vector<command_t>& commands) {
   command_t currentCommand;
-
+  bool firstPipe = true;
   //check for pipes and redirects
-  for(vector<string>::iterator it = tokens.begin(); i != tokens.end(); ++it)
+  for(vector<string>::iterator it = tokens.begin(); it != tokens.end(); ++it)
   {
-    if(&it == "|")
+
+    //PIPELINING
+    if(*it == "|")
     {
+      currentCommand = {};
+      //generate the command behind the pipeline
+      vector<string> a;
+      for(vector<string>::iterator jt = tokens.begin(); jt != it; ++jt)
+      {
+        a.push_back(*jt); //emplace the argv
+        tokens.erase(jt); //remove from the tokens
+      }
+
+      tokens.erase(it);
+
+      currentCommand.argv = a;
+      if(firstPipe)
+      {
+        currentCommand.input_type = READ_FROM_STDIN;
+        firstPipe = false;
+      }
+      else
+      {
+        currentCommand.input_type = READ_FROM_PIPE;
+      }
+      currentCommand.output_type = WRITE_TO_PIPE;
       commands.push_back(currentCommand);
     }
 
-    else if (&it == ">>")
+
+
+
+    //APPEND
+    else if (*it == ">>")
     {
+      currentCommand = {};
       commands.push_back(currentCommand);
     }
 
-    else if (&it == ">")
+
+    else if (*it == ">")
     {
+      currentCommand = {};
       commands.push_back(currentCommand);
     }
 
-    else if (&it == "<")
+    else if (*it == "<")
     {
+      currentCommand = {};
       commands.push_back(currentCommand);
     }
   }
 
   //if none push the line as a command
-  commands.push_back(currentCommand);
+  if(!tokens.empty())
+  {
+    currentCommand = {};
+    vector<string> a;
+    for(vector<string>::iterator it = tokens.begin(); it != tokens.end(); ++it)
+    {
+      a.push_back(*it); //emplace the argv
+      tokens.erase(it); //remove from the tokens
+    }
+
+    currentCommand.argv = a;
+    currentCommand.input_type = READ_FROM_STDIN;
+    currentCommand.output_type = WRITE_TO_STDOUT;
+    commands.push_back(currentCommand);
+  }
   return true;
 }
 
