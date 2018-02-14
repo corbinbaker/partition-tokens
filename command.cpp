@@ -76,6 +76,16 @@ bool partition_tokens(vector<string> tokens, vector<command_t>& commands) {
       }
 
       currentCommand.output_type = APPEND_TO_FILE;
+
+      if(it+1 != tokens.end())
+      {
+        currentCommand.outfile = *(it+1);
+      }
+      else
+      {
+        return false;
+      }
+
       commands.push_back(currentCommand);
     }
 
@@ -106,6 +116,14 @@ bool partition_tokens(vector<string> tokens, vector<command_t>& commands) {
       }
 
       currentCommand.output_type = WRITE_TO_FILE;
+      if(it+1 != tokens.end())
+      {
+        currentCommand.outfile = *(it+1);
+      }
+      else
+      {
+        return false;
+      }
     }
 
     else if (*it == "<")
@@ -123,7 +141,15 @@ bool partition_tokens(vector<string> tokens, vector<command_t>& commands) {
       tokens.erase(it);
       currentCommand.argv = a;
       currentCommand.input_type = READ_FROM_FILE;
-      
+      if(it+1 != tokens.end())
+      {
+        currentCommand.infile = *(it+1);
+      }
+      else
+      {
+        return false;
+      }
+
       if(!firstPipe)
       {
         currentCommand.output_type = WRITE_TO_PIPE;
@@ -132,8 +158,6 @@ bool partition_tokens(vector<string> tokens, vector<command_t>& commands) {
       {
         currentCommand.output_type = WRITE_TO_STDOUT;
       }
-
-
 
       commands.push_back(currentCommand);
     }
