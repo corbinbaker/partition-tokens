@@ -13,6 +13,9 @@ using namespace std;
 bool partition_tokens(vector<string> tokens, vector<command_t>& commands) {
   command_t currentCommand;
   bool firstPipe = true;
+  bool firstRightDirect = true;
+  bool firstLeftDirect = true;
+  
   //check for pipes and redirects
   for(vector<string>::iterator it = tokens.begin(); it != tokens.end(); ++it)
   {
